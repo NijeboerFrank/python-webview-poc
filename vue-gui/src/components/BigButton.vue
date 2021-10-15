@@ -1,5 +1,13 @@
 <template>
-  <button class="button" ref="btn" @click="createRipple">
+  <button
+    class="button"
+    ref="btn"
+    v-on:click.passive="
+      createRipple($event);
+      disableButton();
+    "
+    :disabled="isDisabled"
+  >
     {{ buttonText }}
   </button>
 </template>
@@ -12,8 +20,10 @@ import { Options, Vue } from "vue-class-component";
   },
 })
 export default class BigButton extends Vue {
+  isDisabled = false;
   buttonText!: string;
 
+  // Create the ripple effect on the button by using the button event
   createRipple(event: MouseEvent): void {
     var button: any = this.$refs.btn;
     const circle = document.createElement("span");
@@ -29,6 +39,14 @@ export default class BigButton extends Vue {
       ripple.remove();
     }
     button.appendChild(circle);
+  }
+
+  // This function is here to disable double clicks on this button
+  disableButton(): void {
+    this.isDisabled = true;
+    setTimeout(() => {
+      this.isDisabled = false;
+    }, 2000);
   }
 }
 </script>
