@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-  <v-btn>
+  <Button>
     Test
-  </v-btn>  
+  </Button>  
   </div>
 </template>
 
