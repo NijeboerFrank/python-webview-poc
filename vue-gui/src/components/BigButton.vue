@@ -2,18 +2,25 @@
   <button
     class="button"
     ref="btn"
-    v-on:click.passive="
-      createRipple($event);
-      disableButton();
-    "
+    v-on:click.passive="buttonClick"
     :disabled="isDisabled"
+    @click="callPython"
   >
+    <img src="@/assets/pepega.png" class="button-img" />
     {{ buttonText }}
+
+    {{ ready }}
   </button>
+  {{ resp }}
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
+declare global {
+  interface Window {
+    pywebview: any;
+  }
+}
 @Options({
   props: {
     buttonText: String,
@@ -22,6 +29,8 @@ import { Options, Vue } from "vue-class-component";
 export default class BigButton extends Vue {
   isDisabled = false;
   buttonText!: string;
+  ready = "not ready";
+  resp = "";
 
   // Create the ripple effect on the button by using the button event
   createRipple(event: MouseEvent): void {
@@ -47,6 +56,27 @@ export default class BigButton extends Vue {
     setTimeout(() => {
       this.isDisabled = false;
     }, 2000);
+  }
+
+  // Wrapper that does the passive button click stuff
+  buttonClick(event: MouseEvent): void {
+    this.createRipple(event);
+    this.disableButton();
+  }
+
+  callPython(): void {
+    var resp: Promise<string> = window.pywebview.api.do_something()
+    
+    resp.then((res) => {
+      this.resp = res;
+    });
+  }
+
+  setReady(): void {
+    this.ready = "ready";
+  }
+  mounted() {
+    window.addEventListener("pywebviewready", this.setReady);
   }
 }
 </script>
@@ -84,5 +114,10 @@ span.ripple {
     transform: scale(4);
     opacity: 0;
   }
+}
+
+.button-img {
+  height: 100px;
+  width: 160px;
 }
 </style>
