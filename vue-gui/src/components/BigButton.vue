@@ -16,11 +16,6 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-declare global {
-  interface Window {
-    pywebview: any;
-  }
-}
 @Options({
   props: {
     buttonText: String,
@@ -65,8 +60,8 @@ export default class BigButton extends Vue {
   }
 
   callPython(): void {
-    var resp: Promise<string> = window.pywebview.api.do_something()
-    
+    var resp = window.pywebview.api.do_something();
+
     resp.then((res) => {
       this.resp = res;
     });
